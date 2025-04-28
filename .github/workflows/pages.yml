@@ -1,0 +1,25 @@
+name: Deploy Vite to GitHub Pages
+
+on:
+  push:
+    branches: [main]     # roda sempre que fizer push na main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+
+      - run: npm ci        # instala dependências
+      - run: npm run build # gera /dist
+
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: "./dist" }
+
+  deploy:
+    needs: build
+    permissions: { pages: write, id-token: write }
+    uses: actions/deploy-pages@v4
